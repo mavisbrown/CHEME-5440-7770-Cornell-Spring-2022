@@ -11,7 +11,7 @@ md"""
 
 # ╔═╡ 7057c8e4-9e94-4a28-a885-07f5c96ebe39
 html"""
-<p style="font-size:20px;">Student name, Student name, Student name ... Student name</br>
+<p style="font-size:20px;">Mavis E Ofori-Brown</br>
 Smith School of Chemical and Biomolecular Engineering, Cornell University, Ithaca NY 14850</p>
 """
 
@@ -20,40 +20,32 @@ md"""
 #### Build the stoichiometric array
 """
 
-# ╔═╡ 5338451e-3c4b-4030-bbbb-42eaf4209a89
-begin
-	# fill me in ...
-end
-
 # ╔═╡ 6970dab5-16bd-4898-b88d-723cb1b3d89e
 md"""
 #### Convex analysis: compute the extreme pathways
 """
 
-# ╔═╡ 97b0763d-dcab-4afa-b660-52e18b3d523f
-begin
-	# fill me in ...
-end
+# ╔═╡ 66ceeb2c-7ce5-4ae3-b3e9-67eebbb50805
+html"""
+<p style="font-size:20px;">Question 1.b </br>
+</p> There are 5 extreme pathways and two produced urea
+"""
 
 # ╔═╡ b473b17e-3bf5-4b6c-af24-fe57b5a7e7e9
 md"""
 #### Metabolite connectivity array (MCA)
 """
 
-# ╔═╡ 999ae1fd-5341-4f66-9db2-dec53fa0cd49
-begin
-	# fill me in ...
-end
-
 # ╔═╡ b7e5d1a6-57ed-4d09-a039-a4bd12386367
 md"""
 #### Reaction connectivity array (RCA)
 """
 
-# ╔═╡ 4520fc6e-7305-487e-924d-af22406e6d45
-begin
-	# fill me in ...
-end
+# ╔═╡ f4e1bff9-4ea3-4ee6-8d6c-7f3de28fded1
+html"""
+<p style="font-size:20px;">Question 1.c </br>
+There is no  correlation between reaction connectivity and extreme pathway reaction frequency</p>
+"""
 
 # ╔═╡ 267865de-1b5c-4579-861b-c6c46beb4739
 function ingredients(path::String)
@@ -88,7 +80,103 @@ begin
 
 	# return -
 	nothing
+	
 end
+
+# ╔═╡ 5338451e-3c4b-4030-bbbb-42eaf4209a89
+begin
+	# Set up a collection of reaction strings
+    reaction_array = Array{String,1}()
+
+    # encode the reactions
+    ## Internal Reactions
+    push!(reaction_array,"v₁,ATP+L-Citrulline+L-Aspartate,AMP+Diphosphate+N-(L-Arginino)succinate,false")
+	push!(reaction_array,"v₂,N-(L-Arginino)succinate,Fumarate+L-Arginine,false")
+	push!(reaction_array,"v₃,L-Arginine+H2O,L-Ornithine+Urea,false")
+	push!(reaction_array,"v₄,Carbamoylphosphate+L-Ornithine,Orthophosphate+L-Citrulline,false")
+	push!(reaction_array,"v₅,2*L-Arginine+4*Oxygen+3*NADPH+3*Hcat,2*Nitricoxide+2*L-Citrulline+3*NADPcat+4*H2O,true")
+
+ #External Reaction 
+
+	push!(reaction_array,"b1,∅,Carbamoylphosphate,false")
+	push!(reaction_array,"b2,∅,L-Aspartate,false")
+	push!(reaction_array,"b3,Fumarate,∅,false")
+	push!(reaction_array,"b4,Urea,∅,false")
+	push!(reaction_array,"b5,∅,Oxygen,false")
+	
+	push!(reaction_array,"b6,∅,ATP,false")
+	push!(reaction_array,"b7,AMP,∅,false")
+	push!(reaction_array,"b8,∅,Hcat,false")
+	push!(reaction_array,"b9,NADPcat,∅,false")
+	push!(reaction_array,"b10,∅,NADPH,false")
+	
+	push!(reaction_array,"b11,Orthophosphate,∅,false")
+	push!(reaction_array,"b12,Nitricoxide,∅,false")
+	push!(reaction_array,"b13,Diphosphate,∅,false")
+    push!(reaction_array,"b14,H2O,∅,true")
+
+    # compute the stoichiometric matrix -
+    (S, species_array, reaction_name_array) = lib.build_stoichiometric_matrix(reaction_array;expand=true);
+
+end
+
+# ╔═╡ a70bf34c-501d-4a60-a524-9d7d918f5737
+(M,R)=size(S)
+
+# ╔═╡ 737d4786-2c43-4b5a-ae25-610c87791976
+S
+
+# ╔═╡ 8cc12769-bcd4-4bd7-928c-e0e17ff297bb
+species_array
+
+# ╔═╡ fd011ff9-e5da-4375-a4e4-7eb6d30a4cff
+reaction_name_array
+
+# ╔═╡ 5555da05-fa6f-44a3-86fe-e5046432a8ab
+B=S|> lib.binary_stoichiometric_matrix
+
+# ╔═╡ 97b0763d-dcab-4afa-b660-52e18b3d523f
+begin
+	# compute the extreme pathways Tableu -
+	PM = lib.expa(S)
+	
+	# P constaints the extreme pathways (rows) and 𝒩 is the "balanced" array (should be all zeros) -
+	P = PM[:,1:R]
+	N = PM[:,(R+1):end]
+
+	 #show -
+end
+
+# ╔═╡ 2bce75e7-d676-43ff-9a48-612055213998
+P[:,18]
+
+# ╔═╡ afa97569-d57b-45cf-a6bc-7fcdf9b19b7c
+size(P)
+
+# ╔═╡ 4b8087e1-12b6-4ded-882b-dfb7880ee0f9
+PM #this is the expa pathway
+
+# ╔═╡ 1c0fad7c-fcdd-44fa-907e-fe776da13aea
+P
+
+# ╔═╡ 69b3a535-022a-489f-ba77-fcc99664de4a
+N
+
+# ╔═╡ 999ae1fd-5341-4f66-9db2-dec53fa0cd49
+begin
+	MCA = B*transpose(B)
+end
+
+# ╔═╡ d9b54c72-426b-4c39-926d-aea3238c5b52
+diag(MCA)
+
+# ╔═╡ 4520fc6e-7305-487e-924d-af22406e6d45
+begin
+	RCA = transpose(B)*B
+end
+
+# ╔═╡ 23addc8c-a139-4bac-a5bb-d933e747cd42
+diag(RCA)
 
 # ╔═╡ ab2bcfd5-3ba7-4388-8a3c-2cb95fba989a
 html"""
@@ -1100,12 +1188,26 @@ version = "0.9.1+5"
 # ╟─7057c8e4-9e94-4a28-a885-07f5c96ebe39
 # ╟─87a183bc-3857-4189-8103-18c46ff3245d
 # ╠═5338451e-3c4b-4030-bbbb-42eaf4209a89
+# ╠═a70bf34c-501d-4a60-a524-9d7d918f5737
+# ╠═737d4786-2c43-4b5a-ae25-610c87791976
+# ╠═8cc12769-bcd4-4bd7-928c-e0e17ff297bb
+# ╠═5555da05-fa6f-44a3-86fe-e5046432a8ab
+# ╠═fd011ff9-e5da-4375-a4e4-7eb6d30a4cff
 # ╟─6970dab5-16bd-4898-b88d-723cb1b3d89e
 # ╠═97b0763d-dcab-4afa-b660-52e18b3d523f
+# ╠═2bce75e7-d676-43ff-9a48-612055213998
+# ╠═afa97569-d57b-45cf-a6bc-7fcdf9b19b7c
+# ╠═4b8087e1-12b6-4ded-882b-dfb7880ee0f9
+# ╠═1c0fad7c-fcdd-44fa-907e-fe776da13aea
+# ╠═69b3a535-022a-489f-ba77-fcc99664de4a
+# ╟─66ceeb2c-7ce5-4ae3-b3e9-67eebbb50805
 # ╟─b473b17e-3bf5-4b6c-af24-fe57b5a7e7e9
 # ╠═999ae1fd-5341-4f66-9db2-dec53fa0cd49
+# ╠═d9b54c72-426b-4c39-926d-aea3238c5b52
 # ╟─b7e5d1a6-57ed-4d09-a039-a4bd12386367
 # ╠═4520fc6e-7305-487e-924d-af22406e6d45
+# ╠═23addc8c-a139-4bac-a5bb-d933e747cd42
+# ╟─f4e1bff9-4ea3-4ee6-8d6c-7f3de28fded1
 # ╠═67f5db98-88d0-11ec-27ac-b57538a166f4
 # ╠═267865de-1b5c-4579-861b-c6c46beb4739
 # ╟─ab2bcfd5-3ba7-4388-8a3c-2cb95fba989a
